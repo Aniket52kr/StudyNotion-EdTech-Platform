@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 const Category = require("./models/Category"); // Adjust path as needed
+require("dotenv").config();
+
+const MONGODB_URI = process.env.MONGODB_URL;
 
 mongoose
-  .connect("mongodb+srv://unauthorizedphisher1947:Aniket52kr@studynotion-lms.2tphl.mongodb.net/StudyNotion-LMS?retryWrites=true&w=majority&appName=StudyNotion-LMS", { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(MONGODB_URI)
   .then(async () => {
-    console.log(" Connected to MongoDB");
+    console.log("Connected to MongoDB");
 
     // Sample categories
     const categories = [
