@@ -1,0 +1,46 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Node dependencies
+/node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+/dist/
+/build/
+.out/
+
+# Testing
+/coverage/
+
+# Misc
+.DS_Store
+.vercel/
+.vscode/
+.idea/
+*.log
+*.lock
+*.swp
+*.swo
+*.swn
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# MacOS system files
+*.DS_Store
+
+# Editor files
+/.vscode/
+/.idea/
+*.iml
