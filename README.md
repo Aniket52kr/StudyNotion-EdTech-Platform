@@ -50,13 +50,13 @@ Here're some of the project's best features:
 <p>1. Clone the repository:</p>
 
 ```
-git clone https://github.com/Aniket52kr/StudyNotion-LMS.git
+git clone https://github.com/Aniket52kr/StudyNotion-EdTech-Platform.git
 ```
 
 <p>2. Navigate to the project directory:</p>
 
 ```
-cd StudyNotion
+cd StudyNotion-EdTech-Platform
 ```
 
 <p>3. Install the dependencies for both frontend and backend:</p>
