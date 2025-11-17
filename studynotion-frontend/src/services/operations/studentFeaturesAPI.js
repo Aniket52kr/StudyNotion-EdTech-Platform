@@ -85,6 +85,8 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
     toast.dismiss(toastId);
 }
 
+
+
 async function sendPaymentSuccessEmail(response, amount, token) {
     try{
         await apiConnector("POST", SEND_PAYMENT_SUCCESS_EMAIL_API, {
@@ -99,6 +101,8 @@ async function sendPaymentSuccessEmail(response, amount, token) {
         console.log("PAYMENT SUCCESS EMAIL ERROR....", error);
     }
 }
+
+
 
 //verify payment
 async function verifyPayment(bodyData, token, navigate, dispatch) {

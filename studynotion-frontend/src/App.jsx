@@ -46,66 +46,72 @@ function App() {
       <Route path="courses/:courseId" element={<CourseDetails/>} /> 
       
       <Route
-          path="signup"
-          element={
-            <OpenRoute>
-              <Signup />
-            </OpenRoute>
-          }
-        />
-    <Route
-          path="login"
-          element={
-            <OpenRoute>
-              <Login />
-            </OpenRoute>
-          }
-        />
-
-    <Route
-          path="forgot-password"
-          element={
-            <OpenRoute>
-              <ForgotPassword />
-            </OpenRoute>
-          }
-        />  
+        path="signup"
+        element={
+          <OpenRoute>
+            <Signup />
+          </OpenRoute>
+        }
+      />
+     
+      <Route
+        path="login"
+        element={
+          <OpenRoute>
+            <Login />
+          </OpenRoute>
+        }
+      />
 
       <Route
-          path="verify-email"
-          element={
-            <OpenRoute>
-              <VerifyEmail />
-            </OpenRoute>
-          }
-        />  
+        path="forgot-password"
+        element={
+          <OpenRoute>
+            <ForgotPassword />
+          </OpenRoute>
+        }
+      />  
 
-    <Route
-          path="update-password/:id"
-          element={
-            <OpenRoute>
-              <UpdatePassword />
-            </OpenRoute>
-          }
-        />  
+      <Route
+        path="verify-email"
+        element={
+          <OpenRoute>
+            <VerifyEmail />
+          </OpenRoute>
+        }
+      />  
 
-     <Route
-          path="/about"
-          element={
-            
-              <About />
-            
-          }
-        /> 
-    <Route path="/contact" element={<Contact />} /> 
+      <Route
+        path="update-password/:id"
+        element={
+          <OpenRoute>
+            <UpdatePassword />
+          </OpenRoute>
+        }
+      />  
 
-    <Route 
-      element={
-        <PrivateRoute>
-          <Dashboard />
-        </PrivateRoute>
-      }
-    >
+      <Route
+        path="/about"
+        element={
+            <About />
+          }
+      /> 
+    
+      <Route 
+        path="/contact" 
+        element={
+          <Contact />
+        } 
+      /> 
+
+      <Route 
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      >
+       
       <Route path="dashboard/my-profile" element={<MyProfile />} />
       
       <Route path="dashboard/Settings" element={<Settings />} />
@@ -166,4 +172,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;                  

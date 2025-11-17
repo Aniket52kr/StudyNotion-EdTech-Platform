@@ -12,6 +12,8 @@ const {
   DELETE_PROFILE_API,
 } = settingsEndpoints
 
+
+
 export function updateDisplayPicture(token, formData) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
@@ -43,6 +45,8 @@ export function updateDisplayPicture(token, formData) {
   }
 }
 
+
+
 export function updateProfile(token, formData) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
@@ -70,6 +74,8 @@ export function updateProfile(token, formData) {
   }
 }
 
+
+
 export async function changePassword(token, formData) {
   const toastId = toast.loading("Loading...")
   try {
@@ -88,6 +94,8 @@ export async function changePassword(token, formData) {
   }
   toast.dismiss(toastId)
 }
+
+
 
 export function deleteProfile(token, navigate) {
   return async (dispatch) => {
