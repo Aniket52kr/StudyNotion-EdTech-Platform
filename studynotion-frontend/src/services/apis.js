@@ -1,5 +1,5 @@
 // Load the base URL from the environment variable
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:4000/api/v1";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
 // AUTH ENDPOINTS
