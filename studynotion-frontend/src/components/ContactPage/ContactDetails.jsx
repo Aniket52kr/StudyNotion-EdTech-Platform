@@ -15,13 +15,13 @@ const contactDetails = [
     heading: "Visit us",
     description: "Come and say hello at our office HQ.",
     details:
-      "XYZ-city,XYZ-Country",
+      "Pune, India",
   },
   {
     icon: "IoCall",
     heading: "Call us",
     description: "Mon - Fri From 8am to 5pm",
-    details: "+XXXXXXXXXXXX",
+    details: "+91 9284702879",
   },
 ]
 
