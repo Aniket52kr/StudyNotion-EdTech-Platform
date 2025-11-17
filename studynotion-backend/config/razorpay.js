@@ -1,5 +1,7 @@
 const Razorpay = require("razorpay");
 
+console.log("RAZORPAY_KEY:", process.env.RAZORPAY_KEY)
+console.log("RAZORPAY_SECRET present:", !!process.env.RAZORPAY_SECRET)
 
 exports.instance = new Razorpay({
     key_id: process.env.RAZORPAY_KEY,
