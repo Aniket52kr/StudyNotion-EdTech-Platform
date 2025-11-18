@@ -3,7 +3,7 @@ exports.paymentSuccessEmail = (name, amount, orderId, paymentId) => {
     // Escape user input to prevent HTML/script injection
     const escapeHTML = (str) =>
         String(str)
-            replace(/&/g, "&amp;")
+            .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
