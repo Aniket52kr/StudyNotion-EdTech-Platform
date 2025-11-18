@@ -138,7 +138,7 @@ exports.sendPaymentSuccessEmail = async (req, res) => {
       `Payment Received`,
       paymentSuccessEmail(
         `${enrolledStudent.firstName} ${enrolledStudent.lastName}`,
-        amount / 100,
+        String(amount / 100),
         orderId,
         paymentId
       )
