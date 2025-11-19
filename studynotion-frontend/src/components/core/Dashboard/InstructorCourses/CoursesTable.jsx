@@ -14,7 +14,9 @@ import { formatDate } from "../../../../services/formatDate"
 import {
   deleteCourse,
   fetchInstructorCourses,
+  getReviewsForCourse,
 } from "../../../../services/operations/courseDetailsAPI"
+
 import { COURSE_STATUS } from "../../../../utils/constants"
 import ConfirmationModal from "../../../common/ConfirmationModal"
 
@@ -25,6 +27,10 @@ export default function CoursesTable({ courses, setCourses }) {
   const [loading, setLoading] = useState(false)
   const [confirmationModal, setConfirmationModal] = useState(null)
   const TRUNCATE_LENGTH = 30
+
+  const [reviewsModalOpen, setReviewsModalOpen] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState(null)
+  const [courseReviews, setCourseReviews] = useState([])
 
   const handleCourseDelete = async (courseId) => {
     setLoading(true)
@@ -37,7 +43,12 @@ export default function CoursesTable({ courses, setCourses }) {
     setLoading(false)
   }
 
-  // console.log("All Course ", courses)
+  const handleViewCourseReviews = async (course) => {
+    setSelectedCourse(course)
+    const res = await getReviewsForCourse(course._id)
+    setCourseReviews(res)
+    setReviewsModalOpen(true)
+  }
 
   return (
     <>
@@ -58,6 +69,7 @@ export default function CoursesTable({ courses, setCourses }) {
             </Th>
           </Tr>
         </Thead>
+
         <Tbody>
           {courses?.length === 0 ? (
             <Tr>
@@ -82,6 +94,7 @@ export default function CoursesTable({ courses, setCourses }) {
                     <p className=" max-sm:text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-richblack-5">
                       {course.courseName}
                     </p>
+
                     <p className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base text-richblack-300">
                       {course.courseDescription.split(" ").length >
                       TRUNCATE_LENGTH
@@ -91,9 +104,11 @@ export default function CoursesTable({ courses, setCourses }) {
                             .join(" ") + "..."
                         : course.courseDescription}
                     </p>
+
                     <p className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base text-white">
                       Created: {formatDate(course.createdAt)}
                     </p>
+
                     {course.status === COURSE_STATUS.DRAFT ? (
                       <p className="flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-2 py-[2px] max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-pink-100">
                         <HiClock size={14} />
@@ -109,13 +124,25 @@ export default function CoursesTable({ courses, setCourses }) {
                     )}
                   </div>
                 </Td>
+
                 <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100">
                   2hr 30min
                 </Td>
+
                 <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100">
                   ₹{course.price}
                 </Td>
+
                 <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100 ">
+                  <button
+                    disabled={loading}
+                    onClick={() => handleViewCourseReviews(course)}
+                    title="View Reviews"
+                    className="px-2 mr-1 transition-all duration-200 hover:scale-110 hover:text-yellow-25"
+                  >
+                    View Reviews
+                  </button>
+
                   <button
                     disabled={loading}
                     onClick={() => {
@@ -126,6 +153,7 @@ export default function CoursesTable({ courses, setCourses }) {
                   >
                     <FiEdit2 className="max-sm:text-[13px] sm:text-xs md:text-sm lg:text-base" />
                   </button>
+
                   <button
                     disabled={loading}
                     onClick={() => {
@@ -154,7 +182,53 @@ export default function CoursesTable({ courses, setCourses }) {
           )}
         </Tbody>
       </Table>
+
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
+
+      {reviewsModalOpen && (
+        <div className="fixed inset-0 z-[1000] grid place-items-center bg-black/40">
+          <div className="w-11/12 max-w-[600px] rounded-lg bg-richblack-800 p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-richblack-5">
+                Reviews for {selectedCourse?.courseName}
+              </h2>
+              <button
+                onClick={() => setReviewsModalOpen(false)}
+                className="text-richblack-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            {courseReviews.length === 0 ? (
+              <p className="text-sm text-richblack-200">
+                No reviews yet for this course.
+              </p>
+            ) : (
+              <div className="max-h-[400px] space-y-3 overflow-y-auto">
+                {courseReviews.map((rev) => (
+                  <div
+                    key={rev._id}
+                    className="rounded-md border border-richblack-600 p-3"
+                  >
+                    <div className="mb-1 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-richblack-5">
+                        {rev.user?.firstName} {rev.user?.lastName}
+                      </span>
+                      <span className="text-xs text-yellow-25">
+                        {rev.rating} ★
+                      </span>
+                    </div>
+                    <p className="text-sm text-richblack-100">
+                      {rev.review}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   )
 }
