@@ -442,7 +442,9 @@ export const getReviewsForCourse = async (courseId) => {
 
     const allReviews = response.data.data;
     result = allReviews.filter(
-      (rev) => rev.course?._id === courseId || rev.course === courseId
+      (rev) =>
+        String(rev.course?._id) === String(courseId) ||
+        String(rev.course) === String(courseId)
     );
   } catch (error) {
     console.log("GET_REVIEWS_API ERROR............", error);
