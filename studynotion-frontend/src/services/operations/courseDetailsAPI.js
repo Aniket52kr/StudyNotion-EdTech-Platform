@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast"
 import { updateCompletedLectures } from "../../slices/viewCourseSlice"
 // import { setLoading } from "../../slices/profileSlice";
 import { apiConnector } from "../apiconnector"
-import { courseEndpoints } from "../apis"
+import { courseEndpoints, ratingEndpoints } from "../apis"
 
 const {
   COURSE_DETAILS_API,
@@ -24,6 +24,8 @@ const {
   LECTURE_COMPLETION_API,
 } = courseEndpoints
 
+
+const { REVIEWS_DETAILS_API } = ratingsEndpoints;
 
 // fetch all courses
 export const getAllCourses = async () => {
@@ -50,6 +52,8 @@ export const fetchCourseDetails = async (courseId) => {
   const toastId = toast.loading("Loading...")
   //   dispatch(setLoading(true));
   let result = null
+
+  // fetch course details
   try {
     const response = await apiConnector("POST", COURSE_DETAILS_API, {
       courseId,
@@ -420,3 +424,58 @@ export const createRating = async (data, token) => {
   toast.dismiss(toastId)
   return success
 }
+
+
+
+
+// fetch all reviews for a given course
+export const getReviewsForCourse = async (courseId) => {
+  const toastId = toast.loading("Loading Reviews...");
+  
+  let result = [];
+
+  try {
+    const response = await apiConnector("GET", REVIEWS_DETAILS_API);
+    if (!response?.data?.success) {
+      throw new Error("Could not fetch reviews");
+    }
+
+    const allReviews = response.data.data;
+    result = allReviews.filter(
+      (rev) => rev.course?._id === courseId || rev.course === courseId
+    );
+  } catch (error) {
+    console.log("GET_REVIEWS_API ERROR............", error);
+    toast.error(error.message);
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+
+
+
+// delete a review (only by owner)
+export const deleteReview = async (reviewId, token) => {
+  const toastId = toast.loading("Deleting review...");
+  let success = false;
+  try {
+    const response = await apiConnector(
+      "DELETE",
+      `${process.env.REACT_APP_BASE_URL}/course/deleteReview`,
+      { reviewId },
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+    if (!response?.data?.success) {
+      throw new Error(response.data.message || "Could not delete review");
+    }
+    toast.success("Review deleted");
+    success = true;
+  } catch (error) {
+    console.log("DELETE_REVIEW_API ERROR............", error);
+    toast.error(error.message);
+  }
+  toast.dismiss(toastId);
+  return success;
+};

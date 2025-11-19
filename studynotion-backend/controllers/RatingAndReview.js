@@ -143,3 +143,59 @@ exports.getAllRating = async (req, res) => {
         })
     } 
 }
+
+
+// delete a review (only by owner)
+exports.deleteRating = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { reviewId } = req.body;
+
+        if (!reviewId) {
+            return res.status(400).json({
+                success: false,
+                message: "Review ID is required",
+            });
+        }
+
+        // Find the review
+        const review = await RatingAndReview.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({
+                success: false,
+                message: "Review not found",
+            });
+        }
+
+        // Ownership check
+        if (review.user.toString() !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not allowed to delete this review",
+            });
+        }
+
+        const courseId = review.course;
+
+        // Delete the review
+        await RatingAndReview.findByIdAndDelete(reviewId);
+
+        // Remove reference from Course.ratingAndReviews
+        await Course.findByIdAndUpdate(
+            courseId,
+            { $pull: { ratingAndReviews: reviewId } },
+            { new: true }
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Review deleted successfully",
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};

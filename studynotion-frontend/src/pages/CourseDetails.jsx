@@ -11,7 +11,11 @@ import RatingStars from "../components/common/RatingStars"
 import CourseAccordionBar from "../components/core/Course/CourseAccordionBar"
 import CourseDetailsCard from "../components/core/Course/CourseDetailsCard"
 import { formatDate } from "../services/formatDate"
-import { fetchCourseDetails } from "../services/operations/courseDetailsAPI"
+import {
+  fetchCourseDetails,
+  getReviewsForCourse,
+  deleteReview,
+} from "../services/operations/courseDetailsAPI"
 import { buyCourse } from "../services/operations/studentFeaturesAPI"
 import GetAvgRating from "../utils/avgRating"
 import Error from "./Error"
@@ -26,17 +30,17 @@ function CourseDetails() {
 
   // Getting courseId from url parameter
   const { courseId } = useParams()
-  // console.log(`course id: ${courseId}`)
 
-  // Declear a state to save the course details
+  // State to save the course details
   const [response, setResponse] = useState(null)
   const [confirmationModal, setConfirmationModal] = useState(null)
+  const [reviews, setReviews] = useState([])
+
+  // Fetch course details
   useEffect(() => {
-    // Calling fetchCourseDetails fucntion to fetch the details
     ;(async () => {
       try {
         const res = await fetchCourseDetails(courseId)
-        // console.log("course details res: ", res)
         setResponse(res)
       } catch (error) {
         console.log("Could not fetch Course Details")
@@ -44,7 +48,14 @@ function CourseDetails() {
     })()
   }, [courseId])
 
-  // console.log("response: ", response)
+  // Load reviews for this course
+  useEffect(() => {
+    if (!courseId) return
+    ;(async () => {
+      const res = await getReviewsForCourse(courseId)
+      setReviews(res)
+    })()
+  }, [courseId])
 
   // Calculating Avg Review count
   const [avgReviewCount, setAvgReviewCount] = useState(0)
@@ -52,17 +63,14 @@ function CourseDetails() {
     const count = GetAvgRating(response?.data?.courseDetails.ratingAndReviews)
     setAvgReviewCount(count)
   }, [response])
-  // console.log("avgReviewCount: ", avgReviewCount)
 
-  // // Collapse all
-  // const [collapse, setCollapse] = useState("")
+  // Collapse all
   const [isActive, setIsActive] = useState(Array(0))
   const handleActive = (id) => {
-    // console.log("called", id)
     setIsActive(
       !isActive.includes(id)
         ? isActive.concat([id])
-        : isActive.filter((e) => e != id)
+        : isActive.filter((e) => e !== id)
     )
   }
 
@@ -88,7 +96,6 @@ function CourseDetails() {
   }
 
   const {
-    // _id: course_id,
     courseName,
     courseDescription,
     thumbnail,
@@ -117,7 +124,6 @@ function CourseDetails() {
   }
 
   if (paymentLoading) {
-    // console.log("payment loading")
     return (
       <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
         <div className="spinner"></div>
@@ -127,7 +133,7 @@ function CourseDetails() {
 
   return (
     <>
-      <div className={`relative w-full bg-richblack-800`}>
+      <div className="relative w-full bg-richblack-800">
         {/* Hero Section */}
         <div className="mx-auto box-content px-4 lg:w-[1260px] 2xl:relative ">
           <div className="mx-auto grid min-h-[450px] max-w-maxContentTab justify-items-center py-8 lg:mx-0 lg:justify-items-start lg:py-0 xl:max-w-[810px]">
@@ -139,15 +145,13 @@ function CourseDetails() {
                 className="aspect-auto w-full"
               />
             </div>
-            <div
-              className={`z-30 my-5 flex flex-col justify-center gap-4 py-5 text-lg text-richblack-5`}
-            >
+            <div className="z-30 my-5 flex flex-col justify-center gap-4 py-5 text-lg text-richblack-5">
               <div>
                 <p className="text-4xl font-bold text-richblack-5 sm:text-[42px]">
                   {courseName}
                 </p>
               </div>
-              <p className={`text-richblack-200`}>{courseDescription}</p>
+              <p className="text-richblack-200">{courseDescription}</p>
               <div className="text-md flex flex-wrap items-center gap-2">
                 <span className="text-yellow-25">{avgReviewCount}</span>
                 <RatingStars Review_Count={avgReviewCount} Star_Size={24} />
@@ -155,17 +159,15 @@ function CourseDetails() {
                 <span>{`${studentsEnrolled.length} students enrolled`}</span>
               </div>
               <div>
-                <p className="">
+                <p>
                   Created By {`${instructor.firstName} ${instructor.lastName}`}
                 </p>
               </div>
               <div className="flex flex-wrap gap-5 text-lg">
                 <p className="flex items-center gap-2">
-                  {" "}
                   <BiInfoCircle /> Created at {formatDate(createdAt)}
                 </p>
                 <p className="flex items-center gap-2">
-                  {" "}
                   <HiOutlineGlobeAlt /> English
                 </p>
               </div>
@@ -181,7 +183,7 @@ function CourseDetails() {
             </div>
           </div>
           {/* Courses Card */}
-          <div className="right-[1rem] top-[60px] mx-auto hidden min-h-[600px] w-1/3 max-w-[410px] translate-y-24 md:translate-y-0 lg:absolute  lg:block">
+          <div className="right-[1rem] top-[60px] mx-auto hidden min-h-[600px] w-1/3 max-w-[410px] translate-y-24 md:translate-y-0 lg:absolute lg:block">
             <CourseDetailsCard
               course={response?.data?.courseDetails}
               setConfirmationModal={setConfirmationModal}
@@ -190,6 +192,7 @@ function CourseDetails() {
           </div>
         </div>
       </div>
+
       <div className="mx-auto box-content px-4 text-start text-richblack-5 lg:w-[1260px]">
         <div className="mx-auto max-w-maxContentTab lg:mx-0 xl:max-w-[810px]">
           {/* What will you learn section */}
@@ -207,10 +210,10 @@ function CourseDetails() {
               <div className="flex flex-wrap justify-between gap-2">
                 <div className="flex gap-2">
                   <span>
-                    {courseContent.length} {`section(s)`}
+                    {courseContent.length} section(s)
                   </span>
                   <span>
-                    {totalNoOfLectures} {`lecture(s)`}
+                    {totalNoOfLectures} lecture(s)
                   </span>
                   <span>{response.data?.totalDuration} total length</span>
                 </div>
@@ -256,11 +259,69 @@ function CourseDetails() {
                 {instructor?.additionalDetails?.about}
               </p>
             </div>
+
+            {/* Student Reviews */}
+            <div className="mb-12 py-4">
+              <p className="text-[28px] font-semibold">Student Reviews</p>
+
+              {reviews.length === 0 ? (
+                <p className="mt-2 text-sm text-richblack-200">
+                  No reviews yet. Be the first to review this course.
+                </p>
+              ) : (
+                <div className="mt-4 space-y-3">
+                  {reviews.map((rev) => {
+                    const isOwner =
+                      user &&
+                      rev.user &&
+                      String(rev.user._id) === String(user._id)
+
+                    return (
+                      <div
+                        key={rev._id}
+                        className="flex justify-between gap-3 rounded-md border border-richblack-600 p-3"
+                      >
+                        <div>
+                          <p className="text-sm font-semibold text-richblack-5">
+                            {rev.user?.firstName} {rev.user?.lastName}
+                          </p>
+                          <p className="text-xs text-richblack-200">
+                            {rev.rating} ★
+                          </p>
+                          <p className="mt-1 text-sm text-richblack-100">
+                            {rev.review}
+                          </p>
+                        </div>
+
+                        {isOwner && token && (
+                          <button
+                            onClick={async () => {
+                              const ok = await deleteReview(rev._id, token)
+                              if (ok) {
+                                setReviews((prev) =>
+                                  prev.filter((r) => r._id !== rev._id)
+                                )
+                              }
+                            }}
+                            className="self-start text-xs text-pink-200 hover:text-pink-100"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
       <Footer />
-      {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
+      {confirmationModal && (
+        <ConfirmationModal modalData={confirmationModal} />
+      )}
     </>
   )
 }
