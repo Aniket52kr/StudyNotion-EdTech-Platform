@@ -58,12 +58,23 @@ export default function CoursesTable({ courses, setCourses }) {
             <Th className="flex-1 text-left text-sm font-medium uppercase text-richblack-100 ">
               Courses
             </Th>
+
+            <Th className="text-left text-sm font-medium uppercase text-richblack-100">
+              Lectures
+            </Th>
+
             <Th className="text-left text-sm font-medium uppercase text-richblack-100">
               Duration
             </Th>
+
             <Th className="text-left text-sm font-medium uppercase text-richblack-100">
               Price
             </Th>
+
+            <Th className="text-left text-sm font-medium uppercase text-richblack-100">
+              Reviews
+            </Th>
+
             <Th className="text-left text-sm font-medium uppercase text-richblack-100">
               Actions
             </Th>
@@ -84,6 +95,7 @@ export default function CoursesTable({ courses, setCourses }) {
                 key={course._id}
                 className="flex gap-x-10 border-b border-richblack-800 px-6 py-8"
               >
+                {/* Course info */}
                 <Td className="flex flex-1 gap-x-4">
                   <img
                     src={course?.thumbnail}
@@ -125,14 +137,28 @@ export default function CoursesTable({ courses, setCourses }) {
                   </div>
                 </Td>
 
+                {/* Lectures */}
                 <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100">
-                  2hr 30min
+                  {course.totalLectures ?? 0}
                 </Td>
 
+                {/* Duration */}
+                <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100">
+                  {course.totalDuration || "N/A"}
+                </Td>
+
+                {/* Price */}
                 <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100">
                   ₹{course.price}
                 </Td>
 
+                {/* Reviews count */}
+                <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100">
+                  {course.totalReviews ??
+                    (course.ratingAndReviews?.length || 0)}
+                </Td>
+
+                {/* Actions */}
                 <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100 ">
                   <button
                     disabled={loading}

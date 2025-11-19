@@ -443,18 +443,51 @@ exports.getFullCourseDetails = async (req, res) => {
 // Get a list of Course for a given Instructor
 exports.getInstructorCourses = async (req, res) => {
   try {
-    // Get the instructor ID from the authenticated user or request body
     const instructorId = req.user.id
 
-    // Find all courses belonging to the instructor
+    // populate courseContent -> subSection and ratingAndReviews
     const instructorCourses = await Course.find({
       instructor: instructorId,
-    }).sort({ createdAt: -1 })
+    })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "courseContent",
+        populate: {
+          path: "subSection",
+        },
+      })
+      .populate("ratingAndReviews")
+      .exec()
 
-    // Return the instructor's courses
+    // add derived fields: totalDuration, totalLectures, totalReviews
+    const coursesWithMeta = instructorCourses.map((course) => {
+      let totalDurationInSeconds = 0
+      let totalLectures = 0
+
+      course.courseContent.forEach((section) => {
+        totalLectures += section.subSection.length
+        section.subSection.forEach((sub) => {
+          const secs = parseInt(sub.timeDuration)
+          if (!isNaN(secs)) totalDurationInSeconds += secs
+        })
+      })
+
+      const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
+      const totalReviews = course.ratingAndReviews
+        ? course.ratingAndReviews.length
+        : 0
+
+      return {
+        ...course.toObject(),
+        totalDuration,
+        totalLectures,
+        totalReviews,
+      }
+    })
+
     res.status(200).json({
       success: true,
-      data: instructorCourses,
+      data: coursesWithMeta,
     })
   } catch (error) {
     console.error(error)
@@ -465,6 +498,8 @@ exports.getInstructorCourses = async (req, res) => {
     })
   }
 }
+
+
 
 
 
