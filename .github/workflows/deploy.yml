@@ -38,7 +38,7 @@ jobs:
 
   deploy:
     needs: build-and-push
-    runs-on: [self-hosted, linux, ec2]   # labels of your EC2 runner
+    runs-on: [self-hosted, linux]   
 
     steps:
       - name: Checkout code
