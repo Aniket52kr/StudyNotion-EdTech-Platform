@@ -36,30 +36,17 @@ jobs:
     needs: build-and-push
     runs-on: [self-hosted, linux]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Verify Docker access
-        run: |
-          echo "User: $(whoami)"
-          echo "Groups: $(groups)"
-          docker version
-
       - name: Pull latest images
         run: |
           docker pull aniket52kr/studynotion-backend:latest
           docker pull aniket52kr/studynotion-frontend:latest
 
-      - name: Ensure backend .env file exists
+      - name: Deploy from ~/studynotion
         run: |
-          if [ ! -f studynotion-backend/.env ]; then
-            echo "ERROR: studynotion-backend/.env is missing!"
-            echo "Create it manually on EC2 at: $(pwd)/studynotion-backend/.env"
-            exit 1
-          fi
+          cd /home/ubuntu/studynotion
+          # Optional: pull latest compose/nginx config from Git (if needed)
+          # git pull origin main
 
-      - name: Deploy with Docker Compose
-        run: |
           docker compose down --remove-orphans 2>/dev/null || true
           docker compose up -d --remove-orphans
 
