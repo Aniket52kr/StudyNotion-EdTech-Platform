@@ -41,14 +41,11 @@ jobs:
           docker pull aniket52kr/studynotion-backend:latest
           docker pull aniket52kr/studynotion-frontend:latest
 
-      - name: Deploy from ~/studynotion
+      - name: Deploy using docker-compose (hyphen)
         run: |
           cd /home/ubuntu/studynotion
-          # Optional: pull latest compose/nginx config from Git (if needed)
-          # git pull origin main
-
-          docker compose down --remove-orphans 2>/dev/null || true
-          docker compose up -d --remove-orphans
+          docker-compose down --remove-orphans 2>/dev/null || true
+          docker-compose up -d --remove-orphans
 
       - name: Verify containers
         run: |
