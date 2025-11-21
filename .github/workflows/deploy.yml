@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,16 +35,20 @@ jobs:
 
   deploy:
     needs: build-and-push
-    runs-on: [self-hosted, linux]
+    # Make sure your self-hosted runner has these labels
+    runs-on: [ self-hosted, linux ]
+
     steps:
       - name: Pull latest images
         run: |
           docker pull aniket52kr/studynotion-backend:latest
           docker pull aniket52kr/studynotion-frontend:latest
 
-      - name: Deploy using docker-compose (hyphen)
+      - name: Deploy using docker-compose
         run: |
+          # Adjust this path if your repo is cloned somewhere else on EC2
           cd /home/ubuntu/studynotion
+          git pull origin main || true
           docker-compose down --remove-orphans 2>/dev/null || true
           docker-compose up -d --remove-orphans
 
