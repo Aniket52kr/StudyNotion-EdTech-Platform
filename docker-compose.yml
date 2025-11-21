@@ -6,7 +6,7 @@ services:
     container_name: studynotion-backend
     restart: unless-stopped
     env_file:
-      - /opt/studynotion/backend.env
+      - ./studynotion-backend.env
     ports:
       - "4000:4000"
     networks:
