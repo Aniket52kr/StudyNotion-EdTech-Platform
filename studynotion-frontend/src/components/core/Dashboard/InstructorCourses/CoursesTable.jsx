@@ -153,10 +153,10 @@ export default function CoursesTable({ courses, setCourses }) {
                 </Td>
 
                 {/* Reviews count */}
-                <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100">
+                {/* <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100">
                   {course.totalReviews ??
                     (course.ratingAndReviews?.length || 0)}
-                </Td>
+                </Td> */}
 
                 {/* Actions */}
                 <Td className="max-sm:text-[10px] sm:text-xs md:text-sm lg:text-base font-medium text-richblack-100 ">
