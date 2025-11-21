@@ -34,32 +34,54 @@ jobs:
 
   deploy:
     needs: build-and-push
-    runs-on: [self-hosted, linux]  # Matches your default runner
+    runs-on: [self-hosted, linux]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Verify Docker access (debug)
+        run: |
+          echo "User: $(whoami)"
+          echo "Groups: $(groups)"
+          docker version
 
       - name: Pull latest Docker images
         run: |
           docker pull aniket52kr/studynotion-backend:latest
           docker pull aniket52kr/studynotion-frontend:latest
 
-      - name: Copy prod compose file
-        run: cp docker-compose.prod.yml docker-compose.yml
+      - name: Sync code to deployment directory
+        run: |
+          DEPLOY_DIR="/home/ubuntu/studynotion-deploy"
+          mkdir -p "$DEPLOY_DIR"
+
+          # Copy everything from repo (except heavy folders)
+          rsync -av \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.env' \
+            --exclude='.env.local' \
+            "$GITHUB_WORKSPACE"/ "$DEPLOY_DIR"/
+
+      - name: Ensure backend env file exists
+        run: |
+          ENV_FILE="/home/ubuntu/studynotion-deploy/studynotion-backend.env"
+          if [ ! -f "$ENVFILE" ]; then
+            echo "ERROR: Backend env file missing at $ENV_FILE"
+            echo "You must create it manually on EC2 with your secrets."
+            exit 1
+          fi
+          echo "Found backend env file"
 
       - name: Deploy with Docker Compose
         working-directory: /home/ubuntu/studynotion-deploy
         run: |
-          # Sync repo files into deployment directory
-          rsync -av --exclude='.git' --exclude='node_modules' $GITHUB_WORKSPACE/ ./
-
-          # Ensure env file exists (created manually on EC2)
-          if [ ! -f studynotion-backend.env ]; then
-            echo "ERROR: studynotion-backend.env missing!" >&2
-            exit 1
-          fi
-
-          # Redeploy
+          # Use docker-compose.yml from repo (must use 'image:', not 'build:')
           docker compose down --remove-orphans 2>/dev/null || true
           docker compose up -d --remove-orphans
+
+      - name: Verify deployment
+        run: |
+          sleep 5
+          docker ps --filter "name=studynotion"
