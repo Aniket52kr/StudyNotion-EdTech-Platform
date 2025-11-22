@@ -38,7 +38,7 @@ jobs:
 
   deploy:
     needs: build-and-push
-    # Make sure your self-hosted runner has these labels
+    
     runs-on: [ self-hosted, linux ]
 
     steps:
