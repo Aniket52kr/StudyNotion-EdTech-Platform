@@ -28,12 +28,12 @@ jobs:
 
       - name: Build and push frontend
         uses: docker/build-push-action@v6
-        env:
-          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
         with:
           context: ./studynotion-frontend
           push: true
           tags: aniket52kr/studynotion-frontend:latest
+          build-args: |
+            REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
 
 
   deploy:
