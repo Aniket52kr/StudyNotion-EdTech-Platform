@@ -1,0 +1,32 @@
+# version: '3.9'
+
+services:
+  backend:
+    image: aniket52kr/studynotion-backend:latest
+    container_name: studynotion-backend
+    restart: unless-stopped
+    env_file:
+      - ./studynotion-backend/.env
+    ports:
+      - "4000:4000"
+    networks:
+      - studynotion-network
+
+  frontend:
+    image: aniket52kr/studynotion-frontend:latest
+    container_name: studynotion-frontend
+    restart: unless-stopped
+    build:
+      context: ./studynotion-frontend
+      args:
+        REACT_APP_BASE_URL: http://localhost:4000/api/v1
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - studynotion-network
+
+networks:
+  studynotion-network:
+    driver: bridge
