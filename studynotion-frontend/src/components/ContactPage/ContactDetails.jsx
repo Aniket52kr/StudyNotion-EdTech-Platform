@@ -15,7 +15,7 @@ const contactDetails = [
     heading: "Visit us",
     description: "Come and say hello at our office HQ.",
     details:
-      "Pune, India",
+      "Pune, India - 411002",
   },
   {
     icon: "IoCall",
