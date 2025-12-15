@@ -50,14 +50,10 @@ jobs:
       run: |
         cd ~/studynotion
 
-        # Stop existing containers
         docker-compose down
         
-        # Pull latest images
         docker-compose pull
         
-        # Start services
         docker-compose up -d
         
-        # Clean up old images
         docker image prune -f
