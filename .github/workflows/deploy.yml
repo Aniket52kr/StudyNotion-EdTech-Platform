@@ -39,13 +39,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Deploy to Production
-      run: |
-        echo "Docker images pushed to Docker Hub successfully!"
-        echo "Backend: ${{ secrets.DOCKERHUB_USERNAME }}/studynotion-backend:latest"
-        echo "Frontend: ${{ secrets.DOCKERHUB_USERNAME }}/studynotion-frontend:latest"
-        echo ""
-        echo "To deploy manually, SSH into your server and run:"
-        echo "cd /path/to/your/project"
-        echo "docker-compose pull"
-        echo "docker-compose up -d --force-recreate"
-        echo "docker system prune -f"
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: studynotion.duckdns.org
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd /home/ubuntu/studynotion
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d --force-recreate
+          docker system prune -f
