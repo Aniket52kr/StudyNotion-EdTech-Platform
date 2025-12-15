@@ -7,8 +7,6 @@ services:
     restart: unless-stopped
     env_file:
       - ./studynotion-backend/.env
-    ports:
-      - "4000:4000"
     networks:
       - studynotion-network
 
@@ -16,22 +14,64 @@ services:
     image: aniket52kr/studynotion-frontend:latest
     container_name: studynotion-frontend
     restart: unless-stopped
-    volumes:
-      - ./studynotion-frontend/nginx.conf:/etc/nginx/nginx.conf
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    # build:
-    #   context: ./studynotion-frontend
-    #   args:
-    #     REACT_APP_BASE_URL: http://localhost:4000/api/v1
     ports:
-      - "8080:80"
+      - "80:80"
       - "443:443"
     depends_on:
       - backend
     networks:
       - studynotion-network
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
 
 networks:
   studynotion-network:
     driver: bridge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # version: '3.9'
+
+# services:
+#   backend:
+#     image: aniket52kr/studynotion-backend:latest
+#     container_name: studynotion-backend
+#     restart: unless-stopped
+#     env_file:
+#       - ./studynotion-backend/.env
+#     ports:
+#       - "4000:4000"
+#     networks:
+#       - studynotion-network
+
+#   frontend:
+#     image: aniket52kr/studynotion-frontend:latest
+#     container_name: studynotion-frontend
+#     restart: unless-stopped
+#     build:
+#       context: ./studynotion-frontend
+#       args:
+#         REACT_APP_BASE_URL: http://localhost:4000/api/v1
+#     ports:
+#       - "80:80"
+#       - "443:443"
+#     depends_on:
+#       - backend
+#     networks:
+#       - studynotion-network
+
+# networks:
+#   studynotion-network:
+#     driver: bridge
