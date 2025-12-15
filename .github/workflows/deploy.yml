@@ -36,13 +36,16 @@ jobs:
 
   deploy:
     needs: build-and-push
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
-    - name: Deploy to EC2
+    - name: Deploy to Production
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@studynotion.duckdns.org << 'ENDSSH'
-        cd /home/ubuntu/studynotion
-        docker-compose pull
-        docker-compose up -d --force-recreate
-        docker system prune -f
-        ENDSSH
+        echo "Docker images pushed to Docker Hub successfully!"
+        echo "Backend: ${{ secrets.DOCKERHUB_USERNAME }}/studynotion-backend:latest"
+        echo "Frontend: ${{ secrets.DOCKERHUB_USERNAME }}/studynotion-frontend:latest"
+        echo ""
+        echo "To deploy manually, SSH into your server and run:"
+        echo "cd /path/to/your/project"
+        echo "docker-compose pull"
+        echo "docker-compose up -d --force-recreate"
+        echo "docker system prune -f"
