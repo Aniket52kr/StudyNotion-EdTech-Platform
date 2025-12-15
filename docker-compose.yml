@@ -16,12 +16,17 @@ services:
     image: aniket52kr/studynotion-frontend:latest
     container_name: studynotion-frontend
     restart: unless-stopped
-    build:
-      context: ./studynotion-frontend
-      args:
-        REACT_APP_BASE_URL: http://localhost:4000/api/v1
+    volumes:
+      - ./studynotion-frontend/nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # build:
+    #   context: ./studynotion-frontend
+    #   args:
+    #     REACT_APP_BASE_URL: http://localhost:4000/api/v1
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - backend
     networks:
