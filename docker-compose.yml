@@ -22,8 +22,8 @@ services:
     networks:
       - studynotion-network
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot
 
 networks:
   studynotion-network:
