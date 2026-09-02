@@ -102,7 +102,7 @@ cd frontend npm start
 Feel free to fork the repository and make improvements. If you find any bugs or have suggestions for new features feel free to create a pull request.
 
 
----
+<!-- ---
 
 <h2>Project Screenshots:</h2>
 
@@ -128,4 +128,4 @@ Feel free to fork the repository and make improvements. If you find any bugs or 
 
 <img src="https://res.cloudinary.com/dwftlwry2/image/upload/v1740402943/Screenshot_274_deqxdz.png" alt="project-screenshot" width="1024" height="500/">
 
-<img src="https://res.cloudinary.com/dwftlwry2/image/upload/v1740402943/Screenshot_276_ybjitx.png" alt="project-screenshot" width="1024" height="400/">
+<img src="https://res.cloudinary.com/dwftlwry2/image/upload/v1740402943/Screenshot_276_ybjitx.png" alt="project-screenshot" width="1024" height="400/"> -->
